@@ -1,14 +1,13 @@
 package org.calisto.hotel.sevices;
 
-import org.calisto.hotel.exception.ReservationAlreadyExistsException;
-import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.entity.Reservation;
 import org.calisto.hotel.entity.Room;
+import org.calisto.hotel.exception.ReservationAlreadyExistsException;
+import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +42,6 @@ public class ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
     }
 
-    @Modifying
     @Transactional
     public Reservation save(Reservation reservation) {
         if (isRoomAvailable(reservation)) {
@@ -62,7 +60,6 @@ public class ReservationService {
         }
     }
 
-    @Modifying
     @Transactional
     public Reservation update(Integer id, Reservation updatedReservation) {
         if (isRoomAvailable(updatedReservation)) {
@@ -83,7 +80,6 @@ public class ReservationService {
         }
     }
 
-    @Modifying
     @Transactional
     public void deleteById(Integer id) {
         reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));

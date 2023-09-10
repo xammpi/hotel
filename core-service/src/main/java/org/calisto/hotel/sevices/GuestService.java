@@ -7,7 +7,6 @@ import org.calisto.hotel.repositories.GuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,6 @@ public class GuestService {
                 .orElseThrow(() -> new ResourceNotFoundException("Guest", "email", email));
     }
 
-    @Modifying
     @Transactional
     public Guest save(Guest guest) {
         if (isGuestExist(guest.getEmail())) {
@@ -56,7 +54,6 @@ public class GuestService {
         return guestRepository.save(guest);
     }
 
-    @Modifying
     @Transactional
     public Guest update(Integer id, Guest updatedGuest) {
         Guest guest = findById(id);
@@ -68,7 +65,6 @@ public class GuestService {
         return guestRepository.save(guest);
     }
 
-    @Modifying
     @Transactional
     public void deleteById(Integer id) {
         guestRepository.findById(id)
