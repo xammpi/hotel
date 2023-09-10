@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Guest</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Create New Guest</h4>
+                </div>
+                <div class="card-body">
+                    <form th:method="POST" th:action="@{/guests}" th:object="${guest}">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" th:field="*{firstName}" id="firstName"
+                                   required>
+                            <span style="color:red" th:if="${#fields.hasErrors('firstName')}"
+                                  th:errors="*{firstName}"></span>
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" th:field="*{lastName}" id="lastName"
+                                   required>
+                            <span style="color:red" th:if="${#fields.hasErrors('lastName')}"
+                                  th:errors="*{lastName}"></span>
+                            <label for="email">Email</label>
+                            <input type="text" class="form-control" th:field="*{email}" id="email"
+                                   required>
+                            <span style="color:red" th:if="${#fields.hasErrors('email')}"
+                                  th:errors="*{email}"></span>
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="text" class="form-control" th:field="*{phoneNumber}" id="phoneNumber"
+                                   required>
+                            <span style="color:red" th:if="${#fields.hasErrors('phoneNumber')}"
+                                  th:errors="*{phoneNumber}"></span>
+                        </div>
+                        <!--                        <div class="form-group">-->
+                        <!--                            <label for="reservationDate">Reservation Dates</label>-->
+                        <!--                            <input type="date" class="form-control" th:field="*{reservationDates}"-->
+                        <!--                                   id="reservationDate"-->
+                        <!--                                   required><br>-->
+                        <!--                        </div>-->
+                        <!--                        <div th:each="date, dateIndex : *{reservationDates}">-->
+                        <!--                            <label th:text="${'Дата ' + (dateIndex.index + 1)}"></label>-->
+                        <!--                            <input type="date" th:field="*{reservationDates[__${dateIndex.index}__]}" />-->
+                        <!--                        </div>-->
+                        <button type="submit" class="btn btn-primary">Create Guest</button>
+                        <a th:href="@{/guests}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

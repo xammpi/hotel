@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Hotel Booking App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Room Management</h1>
+    <td>
+        <a class="btn btn-primary" th:href="@{/rooms/new}">Create New Room</a>
+    </td>
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Room Number</th>
+            <th>Capacity</th>
+        </tr>
+        </thead>
+        <tbody th:each="room : ${rooms}">
+        <td th:text="${room.id}"></td>
+        <td th:text="${room.roomNumber}"></td>
+        <td th:text="${room.capacity}"></td>
+        <td>
+            <a class="btn btn-primary" th:href="@{/rooms/{id}(id=${room.id})}">Edit</a>
+        </td>
+        <td>
+            <form th:method="DELETE" th:action="@{/rooms/{id}(id=${room.id})}">
+                <input type="hidden" th:attr="name='_method', value='DELETE'"/>
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+        </td>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li th:class="${rooms.first ? 'page-item disabled' : 'page-item'}">
+                <a class="page-link" th:href="@{/rooms(page=0)}">First</a>
+            </li>
+            <li th:class="${rooms.number == 0 ? 'page-item disabled' : 'page-item'}">
+                <a class="page-link" th:href="@{/rooms(page=${rooms.number - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li th:class="${rooms.number > 4 ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link" th:href="@{/rooms(page=0)}">1</a>
+            </li>
+            <li th:if="${rooms.number > 4 && rooms.totalPages > 10}" class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+            <li th:each="page : ${#numbers.sequence(rooms.number - 2, rooms.number + 2)}"
+                th:class="${page == rooms.number ? 'page-item active' : 'page-item'}"
+                th:if="${page >= 0 && page < rooms.totalPages}">
+                <a class="page-link" th:href="@{/rooms(page=${page})}" th:text="${page + 1}"></a>
+            </li>
+            <li th:if="${rooms.number < rooms.totalPages - 5 && rooms.totalPages > 10}" class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+            <li th:class="${rooms.number < rooms.totalPages - 5 ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link" th:href="@{/rooms(page=${rooms.totalPages - 1})}"
+                   th:text="${rooms.totalPages}"></a>
+            </li>
+
+            <li th:class="${rooms.number == rooms.totalPages - 1 ? 'page-item disabled' : 'page-item'}">
+                <a class="page-link" th:href="@{/rooms(page=${rooms.number + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li th:class="${rooms.last ? 'page-item disabled' : 'page-item'}">
+                <a class="page-link" th:href="@{/rooms(page=${rooms.totalPages - 1})}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

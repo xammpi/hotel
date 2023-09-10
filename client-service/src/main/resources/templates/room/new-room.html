@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Room</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Create New Room</h4>
+                </div>
+                <div class="card-body">
+                    <form th:method="POST" th:action="@{/rooms}" th:object="${room}">
+                        <div class="form-group">
+                            <label for="roomNumber">Room Number</label>
+                            <input type="number" class="form-control" th:field="*{roomNumber}" id="roomNumber"
+                                   required>
+                            <span style="color:red" th:if="${#fields.hasErrors('roomNumber')}"
+                                  th:errors="*{roomNumber}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity">Capacity</label>
+                            <input type="number" class="form-control" th:field="*{capacity}" id="capacity"
+                                   required><br>
+                            <span style="color:red" th:if="${#fields.hasErrors('capacity')}"
+                                  th:errors="*{capacity}"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Room</button>
+                        <a th:href="@{/rooms}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

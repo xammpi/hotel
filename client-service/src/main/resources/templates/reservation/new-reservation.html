@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Reservation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Create New Reservation</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+                    <form th:method="POST" th:action="@{/reservations}" th:object="${reservation}">
+                        <div class="form-group">
+                            <label for="guest">Select a Guest:</label>
+                            <select class="js-select2 form-control" id="guest" name="guest" th:field="*{guest.id}">
+                                <option value="" hidden>Select a guest</option>
+                                <option th:each="guest : ${guests}"
+                                        th:value="${guest.id}"
+                                        th:text="${guest.firstName +' '+ guest.lastName}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="room">Select a Room:</label>
+                            <select class="js-select2 form-control" id="room" name="room" th:field="*{room.id}">
+                                <option value="" hidden>Select a room</option>
+                                <option th:each="room : ${rooms}"
+                                        th:value="${room.id}"
+                                        th:text="${room.roomNumber}"></option>
+                            </select>
+                        </div>
+                        <!--                            <span style="color:red" th:if="${#fields.hasErrors('clientFullName')}"-->
+                        <!--                                  th:errors="*{clientFullName}"></span>-->
+                        <div class="form-group">
+                            <label for="checkInDate">Check in Date</label>
+                            <input type="date" class="form-control" th:field="*{checkInDate}"
+                                   id="checkInDate" required><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkOutDate">Check in Out</label>
+                            <input type="date" class="form-control" th:field="*{checkOutDate}"
+                                   id="checkOutDate" required><br>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Reservation</button>
+                        <a th:href="@{/reservations}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+    // Initialize the Select2 plugin
+    $(document).ready(function () {
+        $('.js-select2').select2();
+    });
+</script>
+</body>
+</html>

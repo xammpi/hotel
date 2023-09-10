@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Edit Guest</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Edit Guest</h1>
+
+    <form th:action="@{/guests/{id}(id=${guest.getId()})}" method="POST" th:object="${guest}">
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" class="form-control" id="firstName" name="firstName"
+                   th:value="${guest.firstName}" required>
+            <span style="color:red" th:if="${#fields.hasErrors('firstName')}"
+                  th:errors="*{firstName}"></span>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" class="form-control" id="lastName" name="lastName"
+                   th:value="${guest.lastName}" required>
+            <span style="color:red" th:if="${#fields.hasErrors('lastName')}"
+                  th:errors="*{lastName}"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" name="email"
+                   th:value="${guest.email}" required>
+            <span style="color:red" th:if="${#fields.hasErrors('email')}"
+                  th:errors="*{email}"></span>
+        </div>
+        <div class="form-group">
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                   th:value="${guest.phoneNumber}" required>
+            <span style="color:red" th:if="${#fields.hasErrors('phoneNumber')}"
+                  th:errors="*{phoneNumber}"></span>
+        </div>
+
+        <!--        <label for="reservationDate">Reserved date:</label>-->
+        <!--        <div th:each="date, dateStatus : *{reservationDates}" class="form-group">-->
+        <!--            <input type="date" class="form-control" th:field="*{reservationDates[__${dateStatus.index}__]}"-->
+        <!--                   th:value="${#temporals.format(date, 'dd-MM-yyyy')}" id="reservationDate" required/>-->
+        <!--            &lt;!&ndash;            <span style="color:red" th:if="${#fields.hasErrors('reservationDates[__${dateStatus.index}__].date')}"&ndash;&gt;-->
+        <!--            &lt;!&ndash;                  th:errors="*{reservationDates[__${dateStatus.index}__].date}"></span>&ndash;&gt;-->
+        <!--        </div>-->
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/guests}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

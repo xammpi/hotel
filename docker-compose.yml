@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    container_name: mysql-container
+    image: mysql:8.0
+    env_file:
+      - .env
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - ${DATABASE_PORT}:3306
+
+  core-service:
+    container_name: core-service-container
+    build:
+      context: ./core-service
+    ports:
+      - ${CORE_SERVICE_PORT}:8081
+    environment:
+      - CORE_SERVICE_PORT=${CORE_SERVICE_PORT}
+      - DATABASE_URL=jdbc:mysql://mysqldb:${DATABASE_PORT}/${DATABASE_NAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_USER=${DATABASE_USER}
+    depends_on:
+      - mysqldb
+
+  client-service:
+    container_name: client-service-container
+    build:
+      context: ./client-service
+    ports:
+      - ${CLIENT_SERVICE_PORT}:8080
+    environment:
+      - SERVER_PORT=${CLIENT_SERVICE_PORT}
+      - CORE_SERVICE_NAME=core-service
+      - CORE_SERVICE_PORT=${CORE_SERVICE_PORT}
+    depends_on:
+      - core-service
+
+
+

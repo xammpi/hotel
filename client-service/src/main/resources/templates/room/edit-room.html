@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Edit Room</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Edit Room</h1>
+    <form th:action="@{/rooms/{id}(id=${room.getId()})}" method="POST" th:object="${room}">
+        <div class="form-group">
+            <label for="roomNumber">Room Number:</label>
+            <input type="text" class="form-control" id="roomNumber" name="roomNumber"
+                   th:value="${room.roomNumber}" required>
+            <span style="color:red" th:if="${#fields.hasErrors('roomNumber')}"
+                  th:errors="*{roomNumber}"></span>
+        </div>
+        <div class="form-group">
+            <label for="capacity">Capacity:</label>
+            <input type="text" class="form-control" id="capacity" name="capacity"
+                   th:value="${room.capacity}" required>
+            <span style="color:red" th:if="${#fields.hasErrors('capacity')}"
+                  th:errors="*{capacity}"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/rooms}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
