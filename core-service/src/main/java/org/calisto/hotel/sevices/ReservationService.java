@@ -39,9 +39,8 @@ public class ReservationService {
     }
 
     public Reservation findById(Integer id) {
-        Reservation reservation = reservationRepository.findById(id)
+        return reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
-        return reservation;
     }
 
     @Modifying
