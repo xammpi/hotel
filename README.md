@@ -64,7 +64,7 @@ Rooms
 Base URL: http://localhost:8080
 
 1. Reservations: /reservations
-2. Guests: /guest
+2. Guests: /guests
 3. Rooms: /rooms
 
 ## Technologies Used
