@@ -5,6 +5,7 @@ import org.calisto.hotel.dto.ReservationDTO;
 import org.calisto.hotel.exception.ErrorDetails;
 import org.calisto.hotel.exception.ErrorHandler;
 import org.calisto.hotel.exception.ReservationAlreadyExistsException;
+import org.calisto.hotel.sevices.reservation.ReservationService;
 import org.calisto.hotel.sevices.reservation.ReservationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/reservations")
 public class ReservationRestController implements ReservationController,
         ErrorHandler<ReservationAlreadyExistsException> {
-    private final ReservationServiceImpl reservationService;
+    private final ReservationService reservationService;
 
     @Autowired
     public ReservationRestController(ReservationServiceImpl reservationService) {

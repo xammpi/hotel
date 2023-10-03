@@ -5,6 +5,7 @@ import org.calisto.hotel.dto.GuestDTO;
 import org.calisto.hotel.exception.ErrorDetails;
 import org.calisto.hotel.exception.ErrorHandler;
 import org.calisto.hotel.exception.GuestAlreadyExistException;
+import org.calisto.hotel.sevices.guest.GuestService;
 import org.calisto.hotel.sevices.guest.GuestServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/guests")
 public class GuestRestController implements GuestController, ErrorHandler<GuestAlreadyExistException> {
-    private final GuestServiceImpl guestService;
+    private final GuestService guestService;
 
     @Autowired
     public GuestRestController(GuestServiceImpl guestService) {
