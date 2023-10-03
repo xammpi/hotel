@@ -5,6 +5,7 @@ import org.calisto.hotel.dto.RoomDTO;
 import org.calisto.hotel.exception.ErrorDetails;
 import org.calisto.hotel.exception.ErrorHandler;
 import org.calisto.hotel.exception.RoomAlreadyExistsException;
+import org.calisto.hotel.sevices.room.RoomService;
 import org.calisto.hotel.sevices.room.RoomServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomRestController implements RoomController, ErrorHandler<RoomAlreadyExistsException> {
-    private final RoomServiceImpl roomService;
+    private final RoomService roomService;
 
     @Autowired
     public RoomRestController(RoomServiceImpl roomService) {
