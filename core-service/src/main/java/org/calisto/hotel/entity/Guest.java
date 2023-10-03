@@ -3,18 +3,15 @@ package org.calisto.hotel.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "guest")
-public class Guest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+public class Guest extends BaseEntity {
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")

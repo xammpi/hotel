@@ -1,10 +1,11 @@
-package org.calisto.hotel.sevices;
+package org.calisto.hotel.sevices.reservation;
 
+import org.calisto.hotel.dto.ReservationDTO;
 import org.calisto.hotel.entity.Reservation;
-import org.calisto.hotel.entity.Room;
 import org.calisto.hotel.exception.ReservationAlreadyExistsException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.ReservationRepository;
+import org.calisto.hotel.util.converters.ReservationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,46 +15,47 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
-public class ReservationService {
+public class ReservationServiceImpl implements ReservationService {
+    private final ReservationConverter reservationConverter;
     private final ReservationRepository reservationRepository;
-    private final RoomService roomService;
-    private final GuestService guestService;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository,
-                              RoomService roomService,
-                              GuestService guestService) {
+    public ReservationServiceImpl(ReservationConverter reservationConverter,
+                                  ReservationRepository reservationRepository) {
+        this.reservationConverter = reservationConverter;
         this.reservationRepository = reservationRepository;
-        this.roomService = roomService;
-        this.guestService = guestService;
     }
 
-    public List<Reservation> findAll() {
-        return reservationRepository.findAll();
+    @Override
+    public List<ReservationDTO> findAll() {
+        List<Reservation> reservationList = reservationRepository.findAll();
+        return reservationConverter.convertToDTOList(reservationList);
     }
 
-    public Page<Reservation> getAllReservations(Pageable pageable) {
-        return reservationRepository.findAll(pageable);
+    @Override
+    public Page<ReservationDTO> findAll(Pageable pageable) {
+        return reservationRepository.findAll(pageable)
+                .map(reservationConverter::convertToDTO);
     }
 
-    public Reservation findById(Integer id) {
-        return reservationRepository.findById(id)
+    @Override
+    public ReservationDTO findById(Integer id) {
+        Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
+        return reservationConverter.convertToDTO(reservation);
     }
 
     @Transactional
-    public Reservation save(Reservation reservation) {
+    @Override
+    public ReservationDTO save(ReservationDTO reservationDTO) {
+        Reservation reservation = reservationConverter.convertToEntity(reservationDTO);
         if (isRoomAvailable(reservation)) {
             Reservation createdReservation = reservationRepository.save(reservation);
-            createdReservation.setRoom(roomService.findById(reservation.getRoom().getId()));
-            createdReservation.setGuest(guestService.findById(reservation.getGuest().getId()));
-            return createdReservation;
+            return reservationConverter.convertToDTO(createdReservation);
         } else {
-            Room room = roomService.findById(reservation.getRoom().getId());
             throw new ReservationAlreadyExistsException(
                     String.format("The room: %s is occupied for selected dates: Check-in date: %s, Check-out date: %s",
-                            room.getRoomNumber(),
+                            reservation.getRoom().getRoomNumber(),
                             reservation.getCheckInDate(),
                             reservation.getCheckOutDate())
             );
@@ -61,19 +63,18 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation update(Integer id, Reservation updatedReservation) {
-        if (isRoomAvailable(updatedReservation)) {
-            Reservation existingReservation = findById(id);
-            existingReservation.setRoom(updatedReservation.getRoom());
-            existingReservation.setGuest(updatedReservation.getGuest());
-            existingReservation.setCheckInDate(updatedReservation.getCheckInDate());
-            existingReservation.setCheckOutDate(updatedReservation.getCheckOutDate());
-            return reservationRepository.save(updatedReservation);
+    @Override
+    public ReservationDTO update(Integer id, ReservationDTO updatedReservation) {
+        Reservation reservation = reservationConverter.convertToEntity(updatedReservation);
+        if (isRoomAvailable(reservation)) {
+            reservation.setCheckInDate(updatedReservation.getCheckInDate());
+            reservation.setCheckOutDate(updatedReservation.getCheckOutDate());
+            Reservation savedReservation = reservationRepository.save(reservation);
+            return reservationConverter.convertToDTO(savedReservation);
         } else {
-            Room room = roomService.findById(updatedReservation.getRoom().getId());
             throw new ReservationAlreadyExistsException(
                     String.format("The room: %s is occupied for selected dates: Check-in date:%s, Check-out date: %s",
-                            room.getRoomNumber(),
+                            reservation.getRoom().getRoomNumber(),
                             updatedReservation.getCheckInDate(),
                             updatedReservation.getCheckOutDate())
             );
@@ -81,6 +82,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @Override
     public void deleteById(Integer id) {
         reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
         reservationRepository.deleteById(id);

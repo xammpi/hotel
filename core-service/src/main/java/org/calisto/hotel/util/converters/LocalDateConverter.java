@@ -1,4 +1,4 @@
-package org.calisto.hotel.util;
+package org.calisto.hotel.util.converters;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

@@ -2,18 +2,16 @@ package org.calisto.hotel.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "reservation")
-public class Reservation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+public class Reservation extends BaseEntity{
     @Column(name = "check_in_date")
     private LocalDate checkInDate;
     @Column(name = "check_out_date")
