@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GuestDTO {
-
     private Integer id;
     @Schema(description = "Guest First Name")
     @NotBlank(message = "First name is required")

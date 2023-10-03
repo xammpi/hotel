@@ -24,51 +24,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
                                                                          WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
                 exception.getMessage(),
                 webRequest.getDescription(false),
                 "RESOURCE_NOT_FOUND"
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ReservationAlreadyExistsException.class)
-    private ResponseEntity<ErrorDetails> handleReservationAlreadyExistsException(
-            ReservationAlreadyExistsException exception,
-            WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                webRequest.getDescription(false),
-                "RESERVATION_ALREADY_EXISTS"
-        );
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(RoomAlreadyExistsException.class)
-    private ResponseEntity<ErrorDetails> handleRoomAlreadyExistsException(
-            RoomAlreadyExistsException exception,
-            WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                webRequest.getDescription(false),
-                "ROOM_ALREADY_EXISTS"
-        );
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(GuestAlreadyExistException.class)
-    private ResponseEntity<ErrorDetails> handleGuestAlreadyExistsException(
-            GuestAlreadyExistException exception,
-            WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                webRequest.getDescription(false),
-                "GUEST_ALREADY_EXISTS"
-        );
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @Override
