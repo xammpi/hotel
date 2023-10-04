@@ -1,5 +1,6 @@
 package org.calisto.hotel.util.converters;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,14 +9,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+@RequiredArgsConstructor
 @Component
 public abstract class BaseConverter<D, E> implements Converter<D, E> {
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public BaseConverter(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
 
     protected abstract Class<D> dtoClass();
 
