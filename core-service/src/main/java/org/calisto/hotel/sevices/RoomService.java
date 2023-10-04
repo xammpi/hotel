@@ -1,4 +1,4 @@
-package org.calisto.hotel.sevices.room;
+package org.calisto.hotel.sevices;
 
 import org.calisto.hotel.dto.RoomDTO;
 import org.springframework.data.domain.Page;

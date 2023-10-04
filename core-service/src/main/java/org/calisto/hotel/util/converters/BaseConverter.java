@@ -7,9 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Component
 public abstract class BaseConverter<D, E> implements Converter<D, E> {
@@ -37,15 +34,15 @@ public abstract class BaseConverter<D, E> implements Converter<D, E> {
     @Override
     public List<D> convertToDTOList(Collection<? extends E> entityList) {
         return entityList.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                         .map(this::convertToDTO)
+                         .toList();
     }
 
     @Override
     public List<E> convertToEntityList(Collection<? extends D> dtoList) {
         return dtoList.stream()
-                .map(this::convertToEntity)
-                .collect(toList());
+                      .map(this::convertToEntity)
+                      .toList();
     }
 
     public Function<D, E> convertToEntity(Class<E> entityClass) {

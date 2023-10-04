@@ -1,4 +1,4 @@
-package org.calisto.hotel.sevices.reservation;
+package org.calisto.hotel.sevices;
 
 import org.calisto.hotel.dto.ReservationDTO;
 import org.springframework.data.domain.Page;

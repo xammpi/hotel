@@ -1,10 +1,11 @@
-package org.calisto.hotel.sevices.reservation;
+package org.calisto.hotel.sevices.impl;
 
 import org.calisto.hotel.dto.ReservationDTO;
 import org.calisto.hotel.entity.Reservation;
 import org.calisto.hotel.exception.ReservationAlreadyExistsException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.ReservationRepository;
+import org.calisto.hotel.sevices.ReservationService;
 import org.calisto.hotel.util.converters.ReservationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package org.calisto.hotel.sevices.guest;
+package org.calisto.hotel.sevices.impl;
 
 import jakarta.transaction.Transactional;
 import org.calisto.hotel.dto.GuestDTO;
@@ -6,6 +6,7 @@ import org.calisto.hotel.entity.Guest;
 import org.calisto.hotel.exception.GuestAlreadyExistException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.GuestRepository;
+import org.calisto.hotel.sevices.GuestService;
 import org.calisto.hotel.util.converters.BaseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

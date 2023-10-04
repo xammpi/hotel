@@ -1,10 +1,11 @@
-package org.calisto.hotel.sevices.room;
+package org.calisto.hotel.sevices.impl;
 
 import org.calisto.hotel.dto.RoomDTO;
 import org.calisto.hotel.entity.Room;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.exception.RoomAlreadyExistsException;
 import org.calisto.hotel.repositories.RoomRepository;
+import org.calisto.hotel.sevices.RoomService;
 import org.calisto.hotel.util.converters.BaseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
