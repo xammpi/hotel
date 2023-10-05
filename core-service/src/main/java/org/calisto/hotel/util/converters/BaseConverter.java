@@ -1,59 +1,90 @@
 package org.calisto.hotel.util.converters;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+public class BaseConverter {
+    private final Class<?> dtoClass;
+    private final Class<?> entityClass;
 
-@Component
-public abstract class BaseConverter<D, E> implements Converter<D, E> {
-    private final ModelMapper modelMapper;
-
-    @Autowired
-    public BaseConverter(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
+    private BaseConverter(Class<?> dtoClass, Class<?> entityClass) {
+        this.dtoClass = dtoClass;
+        this.entityClass = entityClass;
     }
 
-    protected abstract Class<D> dtoClass();
-
-    protected abstract Class<E> entityClass();
-
-    @Override
-    public E convertToEntity(D dto) {
-        return modelMapper.map(dto, entityClass());
+    public static BaseConverter create(Class<?> dtoClass, Class<?> entityClass) {
+        return new BaseConverter(dtoClass, entityClass);
     }
 
-    @Override
-    public D convertToDTO(E entity) {
-        return modelMapper.map(entity, dtoClass());
+    public <D, E> D convertToDTO(E entity) {
+        Objects.requireNonNull(entity, "Input entity cannot be null");
+
+        try {
+            D dto = createInstance(dtoClass);
+            mapFields(entity, dto);
+            return dto;
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Failed to convert entity to DTO", e);
+        }
     }
 
-    @Override
-    public List<D> convertToDTOList(Collection<? extends E> entityList) {
-        return entityList.stream()
+    public <D, E> E convertToEntity(D dto) {
+        Objects.requireNonNull(dto, "Input DTO cannot be null");
+        try {
+            E entity = createInstance(entityClass);
+            mapFields(dto, entity);
+            return entity;
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Failed to convert DTO to entity", e);
+        }
+    }
+
+    public <D, E> List<D> convertToDTOList(List<E> entityList) {
+        return (List<D>) entityList.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<E> convertToEntityList(Collection<? extends D> dtoList) {
-        return dtoList.stream()
+    public <D, E> List<E> convertToEntityList(List<D> dtoList) {
+        return (List<E>) dtoList.stream()
                 .map(this::convertToEntity)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
-    public Function<D, E> convertToEntity(Class<E> entityClass) {
-        return this::convertToEntity;
+    private <T> T createInstance(Class<?> clazz) throws ReflectiveOperationException {
+        Object instance = clazz.getDeclaredConstructor().newInstance();
+        return (T) instance;
     }
 
-    public Function<E, D> convertToDTO(Class<D> dtoClass) {
-        return this::convertToDTO;
+    private void mapFields(Object source, Object target) {
+        Map<String, Field> sourceFields = getFieldMap(source.getClass());
+        Map<String, Field> targetFields = getFieldMap(target.getClass());
+
+        sourceFields.forEach((fieldName, sourceField) -> {
+            Field targetField = targetFields.get(fieldName);
+            if (Objects.nonNull(targetField)) {
+                sourceField.setAccessible(true);
+                targetField.setAccessible(true);
+                try {
+                    Object value = sourceField.get(source);
+                    if (Objects.nonNull(value)) {
+                        targetField.set(target, value);
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Failed to map field: " + fieldName, e);
+                }
+            }
+        });
     }
 
+    private Map<String, Field> getFieldMap(Class<?> clazz) {
+        Map<String, Field> fieldMap = new HashMap<>();
+        while (Objects.nonNull(clazz)) {
+            Arrays.stream(clazz.getDeclaredFields())
+                    .forEach(field -> fieldMap.put(field.getName(), field));
+            clazz = clazz.getSuperclass();
+        }
+        return Collections.unmodifiableMap(fieldMap);
+    }
 }

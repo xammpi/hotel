@@ -18,13 +18,12 @@ import java.util.Optional;
 @Service
 public class GuestServiceImpl implements GuestService {
 
-    private final BaseConverter<GuestDTO, Guest> converter;
+    private final BaseConverter converter = BaseConverter.create(GuestDTO.class, Guest.class);
     private final GuestRepository guestRepository;
 
 
     @Autowired
-    public GuestServiceImpl(BaseConverter<GuestDTO, Guest> converter, GuestRepository guestRepository) {
-        this.converter = converter;
+    public GuestServiceImpl(GuestRepository guestRepository) {
         this.guestRepository = guestRepository;
     }
 

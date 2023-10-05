@@ -51,7 +51,7 @@ public class RoomRestController implements RoomController, ErrorHandler<RoomAlre
 
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<RoomDTO> getRoom(@PathVariable("id") int id) {
+    public ResponseEntity<RoomDTO> getRoom(@PathVariable("id") int id) throws IllegalAccessException, InstantiationException {
         RoomDTO room = roomService.findById(id);
         return ResponseEntity.ok(room);
     }

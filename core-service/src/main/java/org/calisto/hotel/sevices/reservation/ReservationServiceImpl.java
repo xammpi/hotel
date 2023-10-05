@@ -5,7 +5,7 @@ import org.calisto.hotel.entity.Reservation;
 import org.calisto.hotel.exception.ReservationAlreadyExistsException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.ReservationRepository;
-import org.calisto.hotel.util.converters.ReservationConverter;
+import org.calisto.hotel.util.converters.BaseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +16,11 @@ import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
-    private final ReservationConverter reservationConverter;
+    private final BaseConverter reservationConverter = BaseConverter.create(ReservationDTO.class, Reservation.class);
     private final ReservationRepository reservationRepository;
 
     @Autowired
-    public ReservationServiceImpl(ReservationConverter reservationConverter,
-                                  ReservationRepository reservationRepository) {
-        this.reservationConverter = reservationConverter;
+    public ReservationServiceImpl(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
@@ -42,12 +40,14 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDTO findById(Integer id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
+        System.out.println(reservation.getRoom());
         return reservationConverter.convertToDTO(reservation);
     }
 
     @Transactional
     @Override
     public ReservationDTO save(ReservationDTO reservationDTO) {
+        System.out.println(reservationDTO);
         Reservation reservation = reservationConverter.convertToEntity(reservationDTO);
         if (isRoomAvailable(reservation)) {
             Reservation createdReservation = reservationRepository.save(reservation);
@@ -89,6 +89,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     public boolean isRoomAvailable(Reservation reservation) {
+        System.out.println(reservation);
         List<Reservation> overlappingReservations = reservationRepository
                 .findByRoomAndCheckOutDateGreaterThanEqualAndCheckInDateLessThanEqual(
                         reservation.getRoom(), reservation.getCheckInDate()

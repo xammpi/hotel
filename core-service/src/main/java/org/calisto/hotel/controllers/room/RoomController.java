@@ -42,7 +42,7 @@ public interface RoomController {
             description = "Get Room REST API is used to get room by id from database"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    ResponseEntity<RoomDTO> getRoom(int id);
+    ResponseEntity<RoomDTO> getRoom(int id) throws IllegalAccessException, InstantiationException;
 
     @Operation(
             summary = "Edit Room REST API",

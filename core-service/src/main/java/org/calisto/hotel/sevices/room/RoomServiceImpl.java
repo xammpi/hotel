@@ -17,12 +17,11 @@ import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    private final BaseConverter<RoomDTO, Room> converter;
+    private final BaseConverter converter = BaseConverter.create(RoomDTO.class, Room.class);
     private final RoomRepository roomRepository;
 
     @Autowired
-    public RoomServiceImpl(BaseConverter<RoomDTO, Room> converter, RoomRepository roomRepository) {
-        this.converter = converter;
+    public RoomServiceImpl(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
 
@@ -38,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomDTO findById(Integer id) {
+    public RoomDTO findById(Integer id) throws IllegalAccessException, InstantiationException {
         Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room", "id", id));
         return converter.convertToDTO(room);
     }
@@ -60,7 +59,6 @@ public class RoomServiceImpl implements RoomService {
     public RoomDTO update(Integer id, RoomDTO updatedRoom) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Room", "id", id));
-        ;
         room.setRoomNumber(updatedRoom.getRoomNumber());
         room.setCapacity(updatedRoom.getCapacity());
         Room savedRoom = roomRepository.save(room);

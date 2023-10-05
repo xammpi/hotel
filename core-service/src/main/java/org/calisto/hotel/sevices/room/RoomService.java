@@ -12,7 +12,7 @@ public interface RoomService {
 
     Page<RoomDTO> findAll(Pageable pageable);
 
-    RoomDTO findById(Integer id);
+    RoomDTO findById(Integer id) throws IllegalAccessException, InstantiationException;
 
     RoomDTO save(RoomDTO dto);
 
