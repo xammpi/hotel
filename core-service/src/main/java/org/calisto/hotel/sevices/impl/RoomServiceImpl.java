@@ -1,11 +1,12 @@
-package org.calisto.hotel.sevices.room;
+package org.calisto.hotel.sevices.impl;
 
 import org.calisto.hotel.dto.RoomDTO;
 import org.calisto.hotel.entity.Room;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.exception.RoomAlreadyExistsException;
 import org.calisto.hotel.repositories.RoomRepository;
-import org.calisto.hotel.util.converters.BaseConverter;
+import org.calisto.hotel.sevices.RoomService;
+import org.calisto.hotel.util.converters.RoomConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,15 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class RoomServiceImpl implements RoomService {
-    private final BaseConverter converter = BaseConverter.create(RoomDTO.class, Room.class);
+    private final RoomConverter converter;
     private final RoomRepository roomRepository;
 
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository) {
+    public RoomServiceImpl(RoomConverter converter, RoomRepository roomRepository) {
+        this.converter = converter;
         this.roomRepository = roomRepository;
     }
 
@@ -37,7 +39,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomDTO findById(Integer id) throws IllegalAccessException, InstantiationException {
+    public RoomDTO findById(Integer id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room", "id", id));
         return converter.convertToDTO(room);
     }
@@ -80,7 +82,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private boolean isRoomExist(Integer roomNumber) {
-        Optional<Room> existingRoom = roomRepository.findByRoomNumber(roomNumber);
-        return existingRoom.isPresent();
+        RoomDTO existingRoom = findByRoomNumber(roomNumber);
+        return Objects.nonNull(existingRoom);
     }
 }

@@ -1,28 +1,39 @@
 package org.calisto.hotel.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
-@Embeddable
+@MappedSuperclass
 @Data
-public class Audit {
-    @CreatedDate
+public abstract class Audit {
+    private static final String ANONYMOUS = "Anonymous";
+    private static final String UPDATED_ANONYMOUS = "Updated-Anonymous";
     @Column(name = "date_record_created")
     private LocalDateTime dateRecordCreated;
-    @LastModifiedDate
     @Column(name = "date_record_updated")
     private LocalDateTime dateRecordUpdated;
-    @CreatedBy
     @Column(name = "created_by")
     private String createdBy;
-    @LastModifiedBy
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.dateRecordCreated = now;
+        this.dateRecordUpdated = now;
+        this.createdBy = ANONYMOUS;
+        this.updatedBy = ANONYMOUS;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.dateRecordUpdated = LocalDateTime.now();
+        this.updatedBy = UPDATED_ANONYMOUS;
+    }
 }

@@ -1,90 +1,45 @@
 package org.calisto.hotel.util.converters;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class BaseConverter {
-    private final Class<?> dtoClass;
-    private final Class<?> entityClass;
+import java.util.Collection;
+import java.util.List;
 
-    private BaseConverter(Class<?> dtoClass, Class<?> entityClass) {
-        this.dtoClass = dtoClass;
-        this.entityClass = entityClass;
+public abstract class BaseConverter<D, E> implements Converter<D, E> {
+    private final ModelMapper modelMapper;
+    private final Class<D> dtoClass;
+    private final Class<E> entityClass;
+
+    @Autowired
+    public BaseConverter(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        this.dtoClass = getDtoClass();
+        this.entityClass = getEntityClass();
     }
 
-    public static BaseConverter create(Class<?> dtoClass, Class<?> entityClass) {
-        return new BaseConverter(dtoClass, entityClass);
+    @Override
+    public E convertToEntity(D dto) {
+        return modelMapper.map(dto, entityClass);
     }
 
-    public <D, E> D convertToDTO(E entity) {
-        Objects.requireNonNull(entity, "Input entity cannot be null");
-
-        try {
-            D dto = createInstance(dtoClass);
-            mapFields(entity, dto);
-            return dto;
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Failed to convert entity to DTO", e);
-        }
+    @Override
+    public D convertToDTO(E entity) {
+        return modelMapper.map(entity, dtoClass);
     }
 
-    public <D, E> E convertToEntity(D dto) {
-        Objects.requireNonNull(dto, "Input DTO cannot be null");
-        try {
-            E entity = createInstance(entityClass);
-            mapFields(dto, entity);
-            return entity;
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Failed to convert DTO to entity", e);
-        }
-    }
-
-    public <D, E> List<D> convertToDTOList(List<E> entityList) {
-        return (List<D>) entityList.stream()
+    @Override
+    public List<D> convertToDTOList(Collection<? extends E> entityList) {
+        return entityList.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public <D, E> List<E> convertToEntityList(List<D> dtoList) {
-        return (List<E>) dtoList.stream()
+    @Override
+    public List<E> convertToEntityList(Collection<? extends D> dtoList) {
+        return dtoList.stream()
                 .map(this::convertToEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    private <T> T createInstance(Class<?> clazz) throws ReflectiveOperationException {
-        Object instance = clazz.getDeclaredConstructor().newInstance();
-        return (T) instance;
-    }
-
-    private void mapFields(Object source, Object target) {
-        Map<String, Field> sourceFields = getFieldMap(source.getClass());
-        Map<String, Field> targetFields = getFieldMap(target.getClass());
-
-        sourceFields.forEach((fieldName, sourceField) -> {
-            Field targetField = targetFields.get(fieldName);
-            if (Objects.nonNull(targetField)) {
-                sourceField.setAccessible(true);
-                targetField.setAccessible(true);
-                try {
-                    Object value = sourceField.get(source);
-                    if (Objects.nonNull(value)) {
-                        targetField.set(target, value);
-                    }
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Failed to map field: " + fieldName, e);
-                }
-            }
-        });
-    }
-
-    private Map<String, Field> getFieldMap(Class<?> clazz) {
-        Map<String, Field> fieldMap = new HashMap<>();
-        while (Objects.nonNull(clazz)) {
-            Arrays.stream(clazz.getDeclaredFields())
-                    .forEach(field -> fieldMap.put(field.getName(), field));
-            clazz = clazz.getSuperclass();
-        }
-        return Collections.unmodifiableMap(fieldMap);
-    }
 }

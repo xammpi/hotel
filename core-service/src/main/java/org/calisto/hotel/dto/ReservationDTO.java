@@ -7,18 +7,18 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "ReservationDTO Model Information")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationDTO {
-
-    private Integer id;
+public class ReservationDTO extends BaseDTO {
     @Schema(description = "Reservation Check-in Date")
     @NotNull(message = "Check-in date is required")
     @FutureOrPresent(message = "Check-in date should take place in the future or today")

@@ -1,4 +1,4 @@
-package org.calisto.hotel.sevices.guest;
+package org.calisto.hotel.sevices.impl;
 
 import jakarta.transaction.Transactional;
 import org.calisto.hotel.dto.GuestDTO;
@@ -6,24 +6,27 @@ import org.calisto.hotel.entity.Guest;
 import org.calisto.hotel.exception.GuestAlreadyExistException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.GuestRepository;
-import org.calisto.hotel.util.converters.BaseConverter;
+import org.calisto.hotel.sevices.GuestService;
+import org.calisto.hotel.util.converters.GuestConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class GuestServiceImpl implements GuestService {
 
-    private final BaseConverter converter = BaseConverter.create(GuestDTO.class, Guest.class);
+    private final GuestConverter converter;
     private final GuestRepository guestRepository;
 
 
     @Autowired
-    public GuestServiceImpl(GuestRepository guestRepository) {
+    public GuestServiceImpl(GuestConverter converter,
+                            GuestRepository guestRepository) {
+        this.converter = converter;
         this.guestRepository = guestRepository;
     }
 
@@ -90,7 +93,7 @@ public class GuestServiceImpl implements GuestService {
     }
 
     private boolean isGuestExist(String email) {
-        Optional<Guest> existingRoom = guestRepository.findGuestByEmail(email);
-        return existingRoom.isPresent();
+        GuestDTO existingRoom = findByEmail(email);
+        return Objects.nonNull(existingRoom);
     }
 }

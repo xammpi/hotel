@@ -6,15 +6,15 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "RoomDTO Model Information")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomDTO {
-
-    private Integer id;
+public class RoomDTO extends BaseDTO {
     @Schema(description = "Room Number")
     @NotNull(message = "Room number is required")
     @Min(value = 1, message = "Room number must be at least 1")
