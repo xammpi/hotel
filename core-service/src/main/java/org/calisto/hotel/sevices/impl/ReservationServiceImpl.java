@@ -7,7 +7,7 @@ import org.calisto.hotel.exception.ResourceConflictException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.ReservationRepository;
 import org.calisto.hotel.sevices.ReservationService;
-import org.calisto.hotel.util.converters.ReservationConverter;
+import org.calisto.hotel.utils.converters.ReservationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

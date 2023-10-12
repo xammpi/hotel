@@ -6,7 +6,7 @@ import org.calisto.hotel.exception.ResourceConflictException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.RoomRepository;
 import org.calisto.hotel.sevices.RoomService;
-import org.calisto.hotel.util.converters.RoomConverter;
+import org.calisto.hotel.utils.converters.RoomConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

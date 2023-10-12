@@ -9,8 +9,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import static org.calisto.hotel.util.constants.NameConstants.ANONYMOUS;
-import static org.calisto.hotel.util.constants.NameConstants.UPDATED_ANONYMOUS;
+import static org.calisto.hotel.utils.constants.NameConstants.ANONYMOUS;
+import static org.calisto.hotel.utils.constants.NameConstants.UPDATED_ANONYMOUS;
 
 @MappedSuperclass
 @Getter

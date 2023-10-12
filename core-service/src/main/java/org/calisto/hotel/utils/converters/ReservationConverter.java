@@ -1,4 +1,4 @@
-package org.calisto.hotel.util.converters;
+package org.calisto.hotel.utils.converters;
 
 import org.calisto.hotel.dto.ReservationDTO;
 import org.calisto.hotel.entity.Reservation;

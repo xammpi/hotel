@@ -1,4 +1,4 @@
-package org.calisto.hotel.util.constants;
+package org.calisto.hotel.utils.constants;
 
 public class NameConstants {
     public static final String ROOM_TXT = "Room";

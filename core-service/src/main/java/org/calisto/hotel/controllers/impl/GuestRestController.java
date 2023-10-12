@@ -17,10 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static org.calisto.hotel.util.constants.ExceptionConstants.CONFLICT_EXCEPTION_TEMPLATE;
-import static org.calisto.hotel.util.constants.ExceptionConstants.NOT_FOUND_EXCEPTION_TEMPLATE;
-import static org.calisto.hotel.util.constants.Messages.SUCCESSFULLY_DELETED;
-import static org.calisto.hotel.util.constants.NameConstants.*;
+import static org.calisto.hotel.utils.constants.ExceptionConstants.CONFLICT_EXCEPTION_TEMPLATE;
+import static org.calisto.hotel.utils.constants.ExceptionConstants.NOT_FOUND_EXCEPTION_TEMPLATE;
+import static org.calisto.hotel.utils.constants.Messages.SUCCESSFULLY_DELETED;
+import static org.calisto.hotel.utils.constants.NameConstants.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 

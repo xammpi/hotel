@@ -1,4 +1,4 @@
-package org.calisto.hotel.util.constants;
+package org.calisto.hotel.utils.constants;
 
 public class ExceptionConstants {
     public static final String NOT_FOUND_EXCEPTION_TEMPLATE = "The %s not found with %s:'%s'.";
