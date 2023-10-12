@@ -41,5 +41,4 @@ public abstract class BaseConverter<D, E> implements Converter<D, E> {
                 .map(this::convertToEntity)
                 .toList();
     }
-
 }

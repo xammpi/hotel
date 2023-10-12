@@ -3,7 +3,7 @@ package org.calisto.hotel.sevices.impl;
 import org.calisto.hotel.dto.ReservationDTO;
 import org.calisto.hotel.entity.Reservation;
 import org.calisto.hotel.entity.Room;
-import org.calisto.hotel.exception.ReservationAlreadyExistsException;
+import org.calisto.hotel.exception.ResourceConflictException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.ReservationRepository;
 import org.calisto.hotel.sevices.ReservationService;
@@ -44,7 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDTO findById(Integer id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
+                .orElseThrow(ResourceNotFoundException::new);
         return converter.convertToDTO(reservation);
     }
 
@@ -52,57 +52,46 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDTO save(ReservationDTO reservationDTO) {
         Reservation reservation = converter.convertToEntity(reservationDTO);
-        if (isRoomAvailable(reservation)) {
-            Reservation createdReservation = reservationRepository.save(reservation);
-            System.out.println(createdReservation);
-            return converter.convertToDTO(createdReservation);
-        } else {
-            throw new ReservationAlreadyExistsException(
-                    String.format("The room: %s is occupied for selected dates: Check-in date: %s, Check-out date: %s",
-                            reservation.getRoom().getRoomNumber(),
-                            reservation.getCheckInDate(),
-                            reservation.getCheckOutDate())
-            );
+        if (isReservationAvailable(reservation)) {
+            throw new ResourceConflictException();
         }
+        Reservation savedReservation = reservationRepository.save(reservation);
+        return converter.convertToDTO(savedReservation);
     }
 
     @Transactional
     @Override
     public ReservationDTO update(Integer id, ReservationDTO updatedReservation) {
-        Reservation reservation = converter.convertToEntity(updatedReservation);
-        if (isRoomAvailable(reservation)) {
-            reservation.setCheckInDate(updatedReservation.getCheckInDate());
-            reservation.setCheckOutDate(updatedReservation.getCheckOutDate());
-            Reservation savedReservation = reservationRepository.save(reservation);
-            return converter.convertToDTO(savedReservation);
-        } else {
-            throw new ReservationAlreadyExistsException(
-                    String.format("The room: %s is occupied for selected dates: Check-in date:%s, Check-out date: %s",
-                            reservation.getRoom().getRoomNumber(),
-                            updatedReservation.getCheckInDate(),
-                            updatedReservation.getCheckOutDate())
-            );
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+        if (isReservationAvailable(reservation)) {
+            throw new ResourceConflictException();
         }
+        return converter.convertToDTO(reservation);
     }
 
     @Transactional
     @Override
     public void deleteById(Integer id) {
-        reservationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
+        reservationRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
         reservationRepository.deleteById(id);
     }
 
     @Override
-    public List<Reservation> findByRoomAndCheckOutDateGreaterThanEqualAndCheckInDateLessThanEqual(Room room, LocalDate checkOutDate, LocalDate checkInDate) {
+    public List<Reservation> findByRoomAndCheckOutDateGreaterThanEqualAndCheckInDateLessThanEqual(Room room,
+                                                                                                  LocalDate checkOutDate,
+                                                                                                  LocalDate checkInDate) {
         return reservationRepository
                 .findByRoomAndCheckOutDateGreaterThanEqualAndCheckInDateLessThanEqual(
                         room, checkInDate, checkOutDate);
     }
 
-    private boolean isRoomAvailable(Reservation reservation) {
+    private boolean isReservationAvailable(Reservation reservation) {
         List<Reservation> overlappingReservations = findByRoomAndCheckOutDateGreaterThanEqualAndCheckInDateLessThanEqual(
-                reservation.getRoom(), reservation.getCheckInDate()
+                reservation.getRoom(),
+                reservation.getCheckInDate()
                 , reservation.getCheckOutDate());
-        return overlappingReservations.isEmpty();
+        return !overlappingReservations.isEmpty();
     }
 }

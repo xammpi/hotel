@@ -1,11 +1,10 @@
-package org.calisto.hotel.controllers.guest;
+package org.calisto.hotel.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.calisto.hotel.dto.GuestDTO;
-import org.calisto.hotel.exception.GuestAlreadyExistException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +38,7 @@ public interface GuestController {
             description = "Create Guest REST API is used to save guest in database"
     )
     @ApiResponse(responseCode = "201", description = "HTTP Status CREATED")
-    ResponseEntity<GuestDTO> createGuest(@RequestBody @Valid GuestDTO guestDTO)
-            throws GuestAlreadyExistException;
+    ResponseEntity<GuestDTO> createGuest(@RequestBody @Valid GuestDTO guestDTO);
 
     @Operation(
             summary = "Get Guest REST API",

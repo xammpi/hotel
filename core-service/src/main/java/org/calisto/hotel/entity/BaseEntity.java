@@ -1,11 +1,15 @@
 package org.calisto.hotel.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-@Data
-public abstract class BaseEntity {
+@Getter
+@Setter
+public abstract class BaseEntity extends Audit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

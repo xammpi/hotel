@@ -1,11 +1,10 @@
-package org.calisto.hotel.controllers.reservation;
+package org.calisto.hotel.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.calisto.hotel.dto.ReservationDTO;
-import org.calisto.hotel.exception.ReservationAlreadyExistsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +38,14 @@ public interface ReservationController {
             description = "Create Reservation REST API is used to save reservation in database"
     )
     @ApiResponse(responseCode = "201", description = "HTTP Status CREATED")
-    ResponseEntity<ReservationDTO> createReservation(@RequestBody @Valid ReservationDTO reservationDTO)
-            throws ReservationAlreadyExistsException;
+    ResponseEntity<ReservationDTO> createReservation(@RequestBody @Valid ReservationDTO reservationDTO);
 
     @Operation(
             summary = "Get Reservation REST API",
             description = "Get Reservation REST API is used to get reservation by id from database"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    ResponseEntity<ReservationDTO> showReservation(@PathVariable("id") int id);
+    ResponseEntity<ReservationDTO> getReservation(@PathVariable("id") int id);
 
     @Operation(
             summary = "Edit Reservation REST API",

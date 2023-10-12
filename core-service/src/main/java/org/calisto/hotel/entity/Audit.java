@@ -4,15 +4,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import static org.calisto.hotel.util.constants.NameConstants.ANONYMOUS;
+import static org.calisto.hotel.util.constants.NameConstants.UPDATED_ANONYMOUS;
+
 @MappedSuperclass
-@Data
+@Getter
+@Setter
 public abstract class Audit {
-    private static final String ANONYMOUS = "Anonymous";
-    private static final String UPDATED_ANONYMOUS = "Updated-Anonymous";
     @Column(name = "date_record_created")
     private LocalDateTime dateRecordCreated;
     @Column(name = "date_record_updated")
@@ -24,11 +27,8 @@ public abstract class Audit {
 
     @PrePersist
     public void prePersist() {
-        LocalDateTime now = LocalDateTime.now();
-        this.dateRecordCreated = now;
-        this.dateRecordUpdated = now;
+        this.dateRecordCreated = LocalDateTime.now();
         this.createdBy = ANONYMOUS;
-        this.updatedBy = ANONYMOUS;
     }
 
     @PreUpdate

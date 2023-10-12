@@ -2,8 +2,8 @@ package org.calisto.hotel.sevices.impl;
 
 import org.calisto.hotel.dto.RoomDTO;
 import org.calisto.hotel.entity.Room;
+import org.calisto.hotel.exception.ResourceConflictException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
-import org.calisto.hotel.exception.RoomAlreadyExistsException;
 import org.calisto.hotel.repositories.RoomRepository;
 import org.calisto.hotel.sevices.RoomService;
 import org.calisto.hotel.util.converters.RoomConverter;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -40,16 +39,16 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO findById(Integer id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room", "id", id));
+        Room room = roomRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
         return converter.convertToDTO(room);
     }
 
     @Transactional
     @Override
     public RoomDTO save(RoomDTO roomDTO) {
-        if (isRoomExist(roomDTO.getRoomNumber())) {
-            throw new RoomAlreadyExistsException(String.format("The room with number: %s is already exist",
-                    roomDTO.getRoomNumber()));
+        if (isRoomNumberExist(roomDTO.getRoomNumber())) {
+            throw new ResourceConflictException();
         }
         Room entity = converter.convertToEntity(roomDTO);
         Room savedGuest = roomRepository.save(entity);
@@ -60,7 +59,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDTO update(Integer id, RoomDTO updatedRoom) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Room", "id", id));
+                .orElseThrow(ResourceNotFoundException::new);
         room.setRoomNumber(updatedRoom.getRoomNumber());
         room.setCapacity(updatedRoom.getCapacity());
         Room savedRoom = roomRepository.save(room);
@@ -70,19 +69,21 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public void deleteById(Integer id) {
-        roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Room", "id", id));
+        roomRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
         roomRepository.deleteById(id);
     }
 
     @Override
     public RoomDTO findByRoomNumber(Integer roomNumber) {
         Room room = roomRepository.findByRoomNumber(roomNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Room", "room number", roomNumber));
+                .orElseThrow(ResourceNotFoundException::new);
         return converter.convertToDTO(room);
     }
 
-    private boolean isRoomExist(Integer roomNumber) {
-        RoomDTO existingRoom = findByRoomNumber(roomNumber);
-        return Objects.nonNull(existingRoom);
+    @Override
+    public boolean isRoomNumberExist(Integer roomNumber) {
+        return roomRepository.findByRoomNumber(roomNumber)
+                .isPresent();
     }
 }

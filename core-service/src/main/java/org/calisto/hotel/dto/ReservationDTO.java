@@ -2,6 +2,7 @@ package org.calisto.hotel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -32,9 +33,11 @@ public class ReservationDTO extends BaseDTO {
     @Schema(description = "Reservation RoomDTO")
     @NotNull(message = "Room is required")
     @JsonProperty("room")
+    @Valid
     private RoomDTO roomDto;
     @Schema(description = "Reservation GuestDTO")
     @NotNull(message = "Guest is required")
     @JsonProperty("guest")
+    @Valid
     private GuestDTO guestDto;
 }

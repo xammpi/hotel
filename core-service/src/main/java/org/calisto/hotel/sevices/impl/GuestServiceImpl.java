@@ -3,7 +3,7 @@ package org.calisto.hotel.sevices.impl;
 import jakarta.transaction.Transactional;
 import org.calisto.hotel.dto.GuestDTO;
 import org.calisto.hotel.entity.Guest;
-import org.calisto.hotel.exception.GuestAlreadyExistException;
+import org.calisto.hotel.exception.ResourceConflictException;
 import org.calisto.hotel.exception.ResourceNotFoundException;
 import org.calisto.hotel.repositories.GuestRepository;
 import org.calisto.hotel.sevices.GuestService;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class GuestServiceImpl implements GuestService {
@@ -45,7 +44,7 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public GuestDTO findById(Integer id) {
         Guest guest = guestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Guest", "id", id));
+                .orElseThrow(ResourceNotFoundException::new);
         return converter.convertToDTO(guest);
     }
 
@@ -53,12 +52,8 @@ public class GuestServiceImpl implements GuestService {
     @Transactional
     @Override
     public GuestDTO save(GuestDTO guestDTO) {
-        if (isGuestExist(guestDTO.getEmail())) {
-            throw new GuestAlreadyExistException(
-                    String.format("The guest with email: %s is already exist",
-                            guestDTO.getEmail())
-            );
-        }
+        if (isGuestExist(guestDTO.getEmail()))
+            throw new ResourceConflictException();
         Guest entity = converter.convertToEntity(guestDTO);
         Guest savedGuest = guestRepository.save(entity);
         return converter.convertToDTO(savedGuest);
@@ -68,7 +63,7 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public GuestDTO update(Integer id, GuestDTO updatedGuestDTO) {
         Guest guest = guestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Guest", "id", id));
+                .orElseThrow(ResourceNotFoundException::new);
         guest.setEmail(updatedGuestDTO.getEmail());
         guest.setFirstName(updatedGuestDTO.getFirstName());
         guest.setLastName(updatedGuestDTO.getLastName());
@@ -81,19 +76,19 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public void deleteById(Integer id) {
         guestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Guest", "id", id));
+                .orElseThrow(ResourceNotFoundException::new);
         guestRepository.deleteById(id);
     }
 
     @Override
     public GuestDTO findByEmail(String email) {
         Guest guest = guestRepository.findGuestByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Guest", "email", email));
+                .orElseThrow(ResourceNotFoundException::new);
         return converter.convertToDTO(guest);
     }
 
     private boolean isGuestExist(String email) {
-        GuestDTO existingRoom = findByEmail(email);
-        return Objects.nonNull(existingRoom);
+        return guestRepository.findGuestByEmail(email)
+                .isPresent();
     }
 }

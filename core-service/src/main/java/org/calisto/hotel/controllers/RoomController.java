@@ -1,4 +1,4 @@
-package org.calisto.hotel.controllers.room;
+package org.calisto.hotel.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -42,7 +42,7 @@ public interface RoomController {
             description = "Get Room REST API is used to get room by id from database"
     )
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    ResponseEntity<RoomDTO> getRoom(int id) throws IllegalAccessException, InstantiationException;
+    ResponseEntity<RoomDTO> getRoom(int id);
 
     @Operation(
             summary = "Edit Room REST API",
