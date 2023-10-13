@@ -7,14 +7,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "GuestDTO Model Information")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GuestDTO {
-    private Integer id;
+public class GuestDTO extends BaseDTO{
     @Schema(description = "Guest First Name")
     @NotBlank(message = "First name is required")
     @Pattern(regexp = "^[a-zA-Z]{1,20}$", message = "Invalid format or length")

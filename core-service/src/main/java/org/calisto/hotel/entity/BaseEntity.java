@@ -1,19 +1,18 @@
 package org.calisto.hotel.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import org.calisto.hotel.listener.AuditListener;
-import org.calisto.hotel.listener.Auditable;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@EntityListeners(AuditListener.class)
+@EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-@Data
-public abstract class BaseEntity implements Auditable {
+@Getter
+@Setter
+public abstract class BaseEntity extends Audit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     private boolean expired;
-    @Embedded
-    private Audit audit;
 }
